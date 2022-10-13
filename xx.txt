@@ -1,0 +1,99 @@
+#include <iostream>
+#include <math.h>
+#include <iostream>
+#include <fstream>
+#include <queue>
+#include <array>
+using namespace std;
+const int STARTX=1;
+const int STARTY=1;
+const int DESTX=4;
+const int DESTY=4;
+const int HORIZONTAL_SIZE=9;
+const int VERTICAL_SIZE=4;
+struct Node{
+    int x;
+    int y;
+    double f;
+    	Node(int x, int y,double f)
+		: x(x), y(y), f(f)
+	{
+	}
+};
+void map_grid()
+{
+    int size_x,size_y;
+    size_x=4;
+    size_y=9;
+    int arr[size_x][size_y];
+    ifstream iFile;
+    iFile.open("grid.txt");
+    for(int i=0;i<size_x;i++)
+    {
+        for(int j=0;j<size_y;j++)
+        {
+            iFile >> arr[i][j];
+        }
+    }
+    iFile.close();
+    for(int  i=0;i<size_x;i++)
+    {
+        for(int j=0;j<size_y;j++)
+        {
+            cout<<arr[i][j]<<" ";
+        }
+        cout<<endl;
+    }
+}
+double heuristic(int x,int y, Node dest)
+{
+    double H = 1+(sqrt(pow(x-dest.x,2)+(pow(y-dest.y,2))));
+    return H;
+}
+class CompareDist
+{
+public:
+    bool operator()(Node& n1, Node& n2)
+    {
+        if (n1.f > n2.f)
+            return true;
+        else
+            return false;
+    }
+};
+int main()
+{
+int dx[4]={1,0,-1,0};
+int dy[4]={0,1,0,-1};
+int parents[HORIZONTAL_SIZE][VERTICAL_SIZE];
+int closedList[HORIZONTAL_SIZE][VERTICAL_SIZE];
+int grid[HORIZONTAL_SIZE][VERTICAL_SIZE];
+ifstream File;
+File.open("grid.txt");
+for(int i=0;i<VERTICAL_SIZE;i++)
+{
+    for(int j=0;j<HORIZONTAL_SIZE;j++){
+        File>>grid[i][j];
+        cout<<grid[i][j]<<" ";
+        }
+        cout<<endl;
+}
+cout<<endl;
+vector<vector<int>> distance(HORIZONTAL_SIZE + 1, vector<int>(VERTICAL_SIZE + 1, 0));
+priority_queue<Node,vector<Node>,CompareDist>openList;
+openList.push(Node(STARTX,STARTY, distance[STARTX][STARTY]));
+if(grid[STARTX][STARTY] == 5)
+{
+    return false;
+}
+while(!openList.empty())
+{
+    Node first = openList.top();
+    openList.pop();
+    int x=first.x;
+    int y=first.y;
+
+}
+    return 0;
+
+}
