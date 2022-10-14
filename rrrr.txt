@@ -1,0 +1,90 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <fstream>
+#include <cmath>
+
+using namespace std;
+
+class GridPoint {
+    public:
+        int x;
+        int y;
+        int step;
+        GridPoint* parent;
+        double heurystyka;
+        GridPoint(int xx, int yy, int stepp, GridPoint* parentt, double heurystykaa){
+            x = xx;
+            y = yy;
+            step = stepp;
+            parent = parentt;
+            heurystyka = heurystykaa;
+        }
+};
+
+double distance(int xs,int xf,int ys,int yf){
+    return sqrt( pow(double(xs-xf), 2.0) +  pow(double(ys-yf), 2.0));
+};
+
+double calcHeurystyka(int step, double distance){
+    return step + distance;
+};
+
+bool isPointVisited(int x, int y, vector<GridPoint> visitedList){
+    for(int i=0; i< visitedList.size(); i++) {
+        if(x == visitedList[i].x && y == visitedList[i].y){
+            return true;
+        };
+    };
+    return false;
+};
+
+
+vector<vector<int> > wczytaj(string nazwap){
+
+vector<vector<int> > grid;
+int tmp;
+
+ifstream plik(nazwap.c_str());
+
+for ( unsigned int i=0;i<20;i++)
+  {
+      vector<int> gridRow;
+    for ( unsigned int j=0;j<20;j++)
+    {
+        plik >> tmp;
+        gridRow.push_back(tmp);
+    };
+    grid.push_back(gridRow);
+  };
+plik.close();
+
+return grid;
+};
+
+void wyswietl(vector<vector<int> > grid){
+
+for ( unsigned int i=0;i<20;i++)
+  {
+    for ( unsigned int j=0;j<20;j++)
+    {
+         cout << grid[i][j] << ' ';
+    };
+    cout << '\n';
+  };
+};
+
+int main()
+{
+    GridPoint start = GridPoint(2,0,0, NULL ,0);
+    vector<GridPoint> openList;
+    vector<GridPoint> visited;
+
+    visited.push_back(start);
+
+    wyswietl(wczytaj("grid.txt"));
+
+
+
+    return 0;
+};
