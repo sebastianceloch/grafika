@@ -1,99 +1,145 @@
 #include <iostream>
-#include <math.h>
-#include <iostream>
 #include <fstream>
-#include <queue>
+#include <cmath>
+#include <ostream>
 #include <array>
 using namespace std;
-const int STARTX=1;
-const int STARTY=1;
-const int DESTX=4;
-const int DESTY=4;
-const int HORIZONTAL_SIZE=9;
-const int VERTICAL_SIZE=4;
-struct Node{
-    int x;
-    int y;
-    double f;
-    	Node(int x, int y,double f)
-		: x(x), y(y), f(f)
-	{
-	}
-};
-void map_grid()
+const int startX = 1;
+const int startY = 1;
+const int destX = 2;
+const int destY = 2;
+const int maxX = 4;
+const int maxY = 4;
+
+double hVal(int x,int y,int destX, int destY)
 {
-    int size_x,size_y;
-    size_x=4;
-    size_y=9;
-    int arr[size_x][size_y];
-    ifstream iFile;
-    iFile.open("grid.txt");
-    for(int i=0;i<size_x;i++)
-    {
-        for(int j=0;j<size_y;j++)
-        {
-            iFile >> arr[i][j];
-        }
-    }
-    iFile.close();
-    for(int  i=0;i<size_x;i++)
-    {
-        for(int j=0;j<size_y;j++)
-        {
-            cout<<arr[i][j]<<" ";
-        }
-        cout<<endl;
-    }
+    return sqrt(pow(x - destX, 2) + pow(y - destY, 2));
 }
-double heuristic(int x,int y, Node dest)
+
+/*void returning(int openList[][maxY],int gCountX,int gCountY)
 {
-    double H = 1+(sqrt(pow(x-dest.x,2)+(pow(y-dest.y,2))));
-    return H;
-}
-class CompareDist
-{
-public:
-    bool operator()(Node& n1, Node& n2)
+    if(openList[][maxY]==0)
     {
-        if (n1.f > n2.f)
-            return true;
-        else
-            return false;
+        gCountY-=1;
     }
-};
+    if(openList[gCountX][maxY]==1)
+    {
+        gCountY+=1;
+    }
+    if(openList[][maxY]==2)
+    {
+        gCountX+=1;
+    }
+    if(openList[][maxY]==3)
+    {
+        gCountX-=1;
+    }
+}*/
 int main()
 {
-int dx[4]={1,0,-1,0};
-int dy[4]={0,1,0,-1};
-int parents[HORIZONTAL_SIZE][VERTICAL_SIZE];
-int closedList[HORIZONTAL_SIZE][VERTICAL_SIZE];
-int grid[HORIZONTAL_SIZE][VERTICAL_SIZE];
-ifstream File;
-File.open("grid.txt");
-for(int i=0;i<VERTICAL_SIZE;i++)
-{
-    for(int j=0;j<HORIZONTAL_SIZE;j++){
-        File>>grid[i][j];
-        cout<<grid[i][j]<<" ";
+    ifstream file;
+    file.open("grid.txt");
+    int moveX[4]={0,0,-1,1}; //ruch lewo prawo
+    int moveY[4]={1,-1,0,0}; //ruch gora dol
+    int openList[maxX][maxY] = {};
+    int closedList[maxX][maxY] = {};
+    int grid[maxX][maxY] = {};
+    double values[maxX][maxY] = {};
+    //inicjalizacja grida
+    for(int i=0;i<maxY;i++)
+    {
+        for(int j=0;j<maxX;j++)
+        {
+            file >> grid[i][j];
+            cout<<grid[i][j]<<" ";
         }
         cout<<endl;
-}
-cout<<endl;
-vector<vector<int>> distance(HORIZONTAL_SIZE + 1, vector<int>(VERTICAL_SIZE + 1, 0));
-priority_queue<Node,vector<Node>,CompareDist>openList;
-openList.push(Node(STARTX,STARTY, distance[STARTX][STARTY]));
-if(grid[STARTX][STARTY] == 5)
+    }
+    int curX=startX;
+    int curY=startY;
+    int z=0;
+while(z!=30)
 {
-    return false;
-}
-while(!openList.empty())
-{
-    Node first = openList.top();
-    openList.pop();
-    int x=first.x;
-    int y=first.y;
+    closedList[curX][curY] = 1;
+
+    for(int i=0;i<4;i++) //petla ruszajaca sie gora dol lewa prawa po tablicy
+    {
+
+        int tmpX,tmpY = 0;
+        int gVal = 1;
+        int gCountX, gCountY;
+        tmpX = curX+moveX[i];
+        tmpY = curY+moveY[i];
+        if(grid[tmpX][tmpY] == 5 || closedList[tmpX][tmpY] == 1 || tmpX < 0 || tmpY < 0 || tmpX > maxX-1 || tmpY > maxY-1)
+        {
+            continue;
+        }
+        gCountX = curX;
+        gCountY = curY;
+        cout<<"gX: "<<gCountX<<" gY: "<<gCountY<<endl;
+        cout<<"X: "<<tmpX<<" Y: "<<tmpY<<" "<<endl;
+       /* while( gCountX != startX || gCountY != startY)
+        {
+            if(openList[gCountX][gCountY]==0)
+            {
+                gCountY= gCountY - 1;
+            }
+            if(openList[gCountX][gCountY]==1)
+            {
+                gCountY= gCountY + 1;
+            }
+            if(openList[gCountX][gCountY]==2)
+            {
+                gCountX = gCountX + 1;
+            }
+             if(openList[gCountX][gCountY]==3)
+            {
+                gCountX = gCountX - 1;
+            }
+            gVal++;
+         }
+        cout<<"g: "<<gVal<<endl;*/
+        double fVal = hVal(tmpX,tmpY,destX,destY); //obliczanie f(poz)=g(poz)+h(poz)
+        if(openList[tmpX][tmpY] == 0 || values[tmpX][tmpY]>fVal) //przypisanie indeksom tablicy values wartosci pola i tablicy openList informacji o rodzicu
+        {
+            values[tmpX][tmpY] == fVal;
+            openList[tmpX][tmpY] == i;
+            cout<<"chuj:"<<values[1][0]<<"fVal: "<<fVal;
+        }
+
+    }
+    double tmpValue = 0;
+    int minX = 0;
+    int minY = 0;
+    for(int i=0;i<maxY;i++)
+    {
+        for(int j=0;j<maxX;j++)
+        {
+            if((values[i][j] <= tmpValue || tmpValue == 0) && closedList[i][j] == 0)
+            {
+                tmpValue = values[i][j];
+                minX = i;
+                minY = j;
+            }
+        }
+    }
+    curX = minX;
+    curY = minY;
+
+z++;
 
 }
+    for(int i=0;i<maxY;i++)
+    {
+        for(int j=0;j<maxX;j++)
+        {
+            cout<<values[i][j];
+        }
+
+    }
+
+
+
+
     return 0;
-
 }
