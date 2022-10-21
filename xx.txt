@@ -61,7 +61,7 @@ int main()
 while(z!=30)
 {
     closedList[curX][curY] = 1;
-
+//dodac ify czy start i end to sciany
     for(int i=0;i<4;i++) //petla ruszajaca sie gora dol lewa prawa po tablicy
     {
 
