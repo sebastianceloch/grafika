@@ -115,7 +115,7 @@ while(z!=30)
     {
         for(int j=0;j<maxX;j++)
         {
-            if((values[i][j] <= tmpValue || tmpValue == 0) && closedList[i][j] == 0)
+            if((values[i][j] <= tmpValue || tmpValue == 0) && closedList[i][j] == 0) //grid[i][j]!=5
             {
                 tmpValue = values[i][j];
                 minX = i;
