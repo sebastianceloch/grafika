@@ -70,7 +70,7 @@ while(z!=30)
         int gCountX, gCountY;
         tmpX = curX+moveX[i];
         tmpY = curY+moveY[i];
-        if(grid[tmpX][tmpY] == 5 || closedList[tmpX][tmpY] == 1 || tmpX < 0 || tmpY < 0 || tmpX > maxX-1 || tmpY > maxY-1)
+        if(grid[tmpX][tmpY] == 5 || closedList[tmpX][tmpY] == 1 || tmpX < 0 || tmpY < 0 || tmpX > maxX-1 || tmpY > maxY-1) //zle jest
         {
             continue;
         }
