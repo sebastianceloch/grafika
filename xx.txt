@@ -51,71 +51,49 @@ int main()
         for(int j=0;j<maxX;j++)
         {
             file >> grid[i][j];
-            cout<<grid[i][j]<<" ";
         }
-        cout<<endl;
     }
     int curX=startX;
     int curY=startY;
     int z=0;
-while(z!=30)
+    //values[destX][destY]==0 while to bedzie ale pozniej
+while(z!=10)
 {
     closedList[curX][curY] = 1;
-//dodac ify czy start i end to sciany
     for(int i=0;i<4;i++) //petla ruszajaca sie gora dol lewa prawa po tablicy
     {
 
         int tmpX,tmpY = 0;
-        int gVal = 1;
         int gCountX, gCountY;
         tmpX = curX+moveX[i];
         tmpY = curY+moveY[i];
-        if(grid[tmpX][tmpY] == 5 || closedList[tmpX][tmpY] == 1 || tmpX < 0 || tmpY < 0 || tmpX > maxX-1 || tmpY > maxY-1) //zle jest
+        if(grid[tmpX][tmpY] == 5 || closedList[tmpX][tmpY] == 1 || tmpX < 0 || tmpY < 0 || tmpX > maxX-1 || tmpY > maxY-1)
         {
             continue;
         }
         gCountX = curX;
         gCountY = curY;
+        int gVal = 1;
         cout<<"gX: "<<gCountX<<" gY: "<<gCountY<<endl;
         cout<<"X: "<<tmpX<<" Y: "<<tmpY<<" "<<endl;
-       /* while( gCountX != startX || gCountY != startY)
-        {
-            if(openList[gCountX][gCountY]==0)
-            {
-                gCountY= gCountY - 1;
-            }
-            if(openList[gCountX][gCountY]==1)
-            {
-                gCountY= gCountY + 1;
-            }
-            if(openList[gCountX][gCountY]==2)
-            {
-                gCountX = gCountX + 1;
-            }
-             if(openList[gCountX][gCountY]==3)
-            {
-                gCountX = gCountX - 1;
-            }
-            gVal++;
-         }
-        cout<<"g: "<<gVal<<endl;*/
+        cout<<"g: "<<gVal<<endl;
         double fVal = hVal(tmpX,tmpY,destX,destY); //obliczanie f(poz)=g(poz)+h(poz)
         if(openList[tmpX][tmpY] == 0 || values[tmpX][tmpY]>fVal) //przypisanie indeksom tablicy values wartosci pola i tablicy openList informacji o rodzicu
         {
-            values[tmpX][tmpY] == fVal;
-            openList[tmpX][tmpY] == i;
-            cout<<"chuj:"<<values[1][0]<<"fVal: "<<fVal;
+            values[tmpX][tmpY] = fVal;
+            openList[tmpX][tmpY] = i;
         }
 
     }
-    double tmpValue = 0;
+
+    double tmpValue = 0.0;
     int minX = 0;
     int minY = 0;
     for(int i=0;i<maxY;i++)
     {
         for(int j=0;j<maxX;j++)
         {
-            if((values[i][j] <= tmpValue || tmpValue == 0) && closedList[i][j] == 0) //grid[i][j]!=5
+            if((values[i][j] <= tmpValue || tmpValue == 0) && closedList[i][j] == 0 && grid[i][j] != 5)
             {
                 tmpValue = values[i][j];
                 minX = i;
@@ -129,14 +107,6 @@ while(z!=30)
 z++;
 
 }
-    for(int i=0;i<maxY;i++)
-    {
-        for(int j=0;j<maxX;j++)
-        {
-            cout<<values[i][j];
-        }
-
-    }
 
 
 
