@@ -4,12 +4,12 @@
 #include <ostream>
 #include <array>
 using namespace std;
-const int startX = 2;
+const int startX = 1;
 const int startY = 1;
 const int destX = 4;
 const int destY = 4;
-const int maxX = 4;
-const int maxY = 4;
+const int maxX = 5;
+const int maxY = 5;
 
 double hVal(int x,int y,int destX, int destY)
 {
@@ -55,44 +55,50 @@ int main()
             file >> grid[i][j];
         }
     }
-    int curX=startX;
-    int curY=startY;
-    int z=0;
-    //values[destX][destY]==0 while to bedzie ale pozniej
-while(closedList[destX][destY]==0)
+    int curX=startX; //rodzic X
+    int curY=startY; //rodzic Y
+
+while(closedList[destX][destY]==0) //glowna petla konczy dzialanie gdy zamknieta lista dojdzie do celu
 {
+    if(grid[startX][startY]==5)
+    {
+        cout<<"start jest sciana"<<endl;
+        break;
+    }
+    if(grid[destX][destY]==5)
+    {
+        cout<<"koniec jest sciana"<<endl;
+        break;
+    }
     closedList[curX][curY] = 1;
     for(int i=0;i<4;i++) //petla ruszajaca sie gora dol lewa prawa po tablicy
     {
 
         int tmpX,tmpY = 0;
-        int gCountX, gCountY;
-        tmpX = curX+moveX[i];
-        tmpY = curY+moveY[i];
+        tmpX = curX+moveX[i]; //dziecko curX
+        tmpY = curY+moveY[i]; //dziecko curY
         if(grid[tmpX][tmpY] == 5 || closedList[tmpX][tmpY] == 1 || tmpX < 0 || tmpY < 0 || tmpX > maxX-1 || tmpY > maxY-1)
         {
             continue;
         }
-        distance[tmpX][tmpY]=distance[curX][curY]+1;
+        distance[tmpX][tmpY]=distance[curX][curY]+1; //dystans od pola [tmpX][tmpY] do startu
         cout<<"prntX: "<<curX<<"prntY: "<<curY<<endl;
         cout<<"X: "<<tmpX<<" Y: "<<tmpY<<" "<<endl;
         double fVal = distance[tmpX][tmpY]+hVal(tmpX,tmpY,destX,destY); //obliczanie f(poz)=g(poz)+h(poz)
         if(openList[tmpX][tmpY] == 0 || values[tmpX][tmpY]>fVal) //przypisanie indeksom tablicy values wartosci pola i tablicy openList informacji o rodzicu
         {
+            openList[tmpX][tmpY] = 1+i;
             values[tmpX][tmpY] = fVal;
-            openList[tmpX][tmpY] = i;
         }
-
     }
-
     double tmpValue = 0;
     int minX = 0;
     int minY = 0;
-    for(int i=0;i<maxY;i++)
+    for(int i=0;i<maxX;i++)
     {
-        for(int j=0;j<maxX;j++)
+        for(int j=0;j<maxY;j++)
         {
-            if((values[i][j] <= tmpValue || tmpValue == 0) && closedList[i][j] == 0 && grid[i][j] != 5)
+            if(closedList[i][j] == 0 && grid[i][j]!=5 && (values[i][j] <= tmpValue && values[i][j] != 0 || tmpValue == 0.0))
             {
                 tmpValue = values[i][j];
                 minX = i;
@@ -102,13 +108,50 @@ while(closedList[destX][destY]==0)
     }
     curX = minX;
     curY = minY;
-
-z++;
-
 }
-
-
-
+for(int i=0;i<maxX;i++)
+{
+    for(int j=0;j<maxY;j++)
+    {
+        cout<<openList[i][j]<<" ";
+    }
+    cout<<endl;
+}
+int prntX = destX,prntY = destY;
+while(prntX != startX || prntY != startY)
+{
+    grid[prntX][prntY]=3;
+    if(openList[prntX][prntY]==1)
+    {
+        prntY+=moveY[1];
+    grid[prntX][prntY]=3;
+    }
+    if(openList[prntX][prntY]==2)
+    {
+        prntY+=moveY[0];
+    grid[prntX][prntY]=3;
+    }
+    if(openList[prntX][prntY]==3)
+    {
+        prntX+=moveX[3];
+    grid[prntX][prntY]=3;
+    }
+    if(openList[prntX][prntY]==4)
+    {
+        prntX+=moveX[2];
+    grid[prntX][prntY]=3;
+    }
+}
+cout<<endl;
+for(int i=0;i<maxX;i++)
+{
+    for(int j=0;j<maxY;j++)
+    {
+        cout<<grid[i][j]<<" ";
+    }
+    cout<<endl;
+}
 
     return 0;
 }
+
