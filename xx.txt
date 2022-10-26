@@ -4,12 +4,12 @@
 #include <ostream>
 #include <array>
 using namespace std;
-const int startX = 1;
-const int startY = 1;
-const int destX = 4;
-const int destY = 4;
-const int maxX = 5;
-const int maxY = 5;
+const int startX = 19;
+const int startY = 19;
+const int destX = 1;
+const int destY = 1;
+const int maxX = 20;
+const int maxY = 20;
 
 double hVal(int x,int y,int destX, int destY)
 {
@@ -17,6 +17,14 @@ double hVal(int x,int y,int destX, int destY)
     return h;
 }
 
+bool isDest(int x,int y,int destX,int destY)
+{
+    if(x == destX && y==destY)
+    {
+        return true;
+    }
+    return false;
+}
 void grid_path_reverse(int x,int y,int startX,int startY,int grid[maxX][maxY],int directions[maxX][maxY],int moveX[4],int moveY[4])
 {
     while(x != startX || y != startY)
@@ -83,19 +91,25 @@ int main()
             file >> grid[i][j];
         }
     }
+    if(isDest(curX,curY,destX,destY))
+    {
+        cout<<"jestes na koncu"<<endl;
+        return 4;
+    }
+
 while(closedList[destX][destY]==0) //glowna petla konczy dzialanie gdy zamknieta lista dojdzie do celu
 {
+    closedList[curX][curY] = 1;
     if(grid[startX][startY]==5)
     {
         cout<<"start jest sciana"<<endl;
-        break;
+        return 1;
     }
     if(grid[destX][destY]==5)
     {
         cout<<"koniec jest sciana"<<endl;
-        break;
+        return 2;
     }
-    closedList[curX][curY] = 1;
     for(int i=0;i<4;i++) //petla ruszajaca sie gora dol lewa prawa po tablicy
     {
 
@@ -120,7 +134,7 @@ while(closedList[destX][destY]==0) //glowna petla konczy dzialanie gdy zamknieta
     {
         for(int j=0;j<maxY;j++)
         {
-            if(closedList[i][j] == 0 && (values[i][j] <= tmpValue && values[i][j] != 0) || tmpValue == 0 && grid[i][j]!=5)
+            if(closedList[i][j] == 0 && (values[i][j] <= tmpValue && values[i][j] != 0 || tmpValue == 0) && grid[i][j]!=5)
             {
                 tmpValue = values[i][j];
                 minX = i;
@@ -131,6 +145,11 @@ while(closedList[destX][destY]==0) //glowna petla konczy dzialanie gdy zamknieta
     curX = minX;
     curY = minY;
     openList[curX][curY]=0;
+    if(tmpValue==0)
+    {
+        cout<<"brak sciezki"<<endl;
+        return 3;
+    }
 }
 print_array(openList);
 print_array(closedList);
@@ -139,4 +158,3 @@ grid_path_reverse(x,y,startX,startY,grid,directions,moveX,moveY);
 print_array(grid);
     return 0;
 }
-
