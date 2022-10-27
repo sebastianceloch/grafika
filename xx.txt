@@ -11,13 +11,13 @@ const int destY = 1;
 const int maxX = 20;
 const int maxY = 20;
 
-double hVal(int x,int y,int destX, int destY)
+double hVal(int x,int y,int destX, int destY) //heurystyka
 {
     double h=sqrt(pow(x - destX, 2) + pow(y - destY, 2));
     return h;
 }
 
-bool isDest(int x,int y,int destX,int destY)
+bool isDest(int x,int y,int destX,int destY) //sprawdzanie czy start to dest
 {
     if(x == destX && y==destY)
     {
@@ -25,7 +25,7 @@ bool isDest(int x,int y,int destX,int destY)
     }
     return false;
 }
-void grid_path_reverse(int x,int y,int startX,int startY,int grid[maxX][maxY],int directions[maxX][maxY],int moveX[4],int moveY[4])
+void grid_path_reverse(int x,int y,int startX,int startY,int grid[maxX][maxY],int directions[maxX][maxY],int moveX[4],int moveY[4]) //wracanie do startu rysowanie 3 po gridzie
 {
     while(x != startX || y != startY)
     {
@@ -53,7 +53,7 @@ void grid_path_reverse(int x,int y,int startX,int startY,int grid[maxX][maxY],in
     }
 }
 
-void print_array(int arr[maxX][maxY])
+void print_array(int arr[maxX][maxY]) //print tablic
 {
     cout<<endl;
     for(int i=0;i<maxX;i++)
@@ -66,6 +66,18 @@ void print_array(int arr[maxX][maxY])
     }
 }
 
+void print_array_double(double arr[maxX][maxY])
+{
+    cout<<endl;
+    for(int i=0;i<maxX;i++)
+    {
+        for(int j=0;j<maxY;j++)
+        {
+            cout<<arr[i][j]<<" ";
+        }
+        cout<<endl;
+    }
+}
 int main()
 {
     ifstream file;
@@ -97,15 +109,15 @@ int main()
         return 4;
     }
 
-while(closedList[destX][destY]==0) //glowna petla konczy dzialanie gdy zamknieta lista dojdzie do celu
+while(closedList[destX][destY]==0) //glowna petla konczy dzialanie gdy dest w zamknietej liscie rozne niz zero
 {
     closedList[curX][curY] = 1;
-    if(grid[startX][startY]==5)
+    if(grid[startX][startY]==5) //jak start to 5 na gridzie return 1
     {
         cout<<"start jest sciana"<<endl;
         return 1;
     }
-    if(grid[destX][destY]==5)
+    if(grid[destX][destY]==5) //jak koniec to 5 na gridzie return 2
     {
         cout<<"koniec jest sciana"<<endl;
         return 2;
@@ -134,7 +146,7 @@ while(closedList[destX][destY]==0) //glowna petla konczy dzialanie gdy zamknieta
     {
         for(int j=0;j<maxY;j++)
         {
-            if(closedList[i][j] == 0 && (values[i][j] <= tmpValue && values[i][j] != 0 || tmpValue == 0) && grid[i][j]!=5)
+            if(closedList[i][j] == 0 && (values[i][j] <= tmpValue && values[i][j] != 0 || tmpValue == 0) && grid[i][j]!=5) //szukanie najmniejszej wartosci f(poz) i przypisanie jej do closedListy
             {
                 tmpValue = values[i][j];
                 minX = i;
@@ -144,17 +156,26 @@ while(closedList[destX][destY]==0) //glowna petla konczy dzialanie gdy zamknieta
     }
     curX = minX;
     curY = minY;
-    openList[curX][curY]=0;
+    openList[curX][curY]=0; //gdy curX curY wlatuje do closed wychodzi z open
     if(tmpValue==0)
     {
         cout<<"brak sciezki"<<endl;
         return 3;
     }
 }
+string fileName="grid_path.txt";
+print_array_double(distance);
 print_array(openList);
-print_array(closedList);
-print_array(directions);
 grid_path_reverse(x,y,startX,startY,grid,directions,moveX,moveY);
 print_array(grid);
+ofstream save(fileName);
+for(int i=0;i<maxX;i++)
+{
+    for(int j=0;j<maxY;j++)
+    {
+        save<<grid[i][j]<<" ";
+    }
+    save<<endl;
+}
     return 0;
 }
