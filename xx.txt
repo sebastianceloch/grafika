@@ -4,6 +4,7 @@
 #include <ostream>
 #include <array>
 using namespace std;
+//stale
 const int startX = 19;
 const int startY = 19;
 const int destX = 1;
@@ -53,7 +54,7 @@ void grid_path_reverse(int x,int y,int startX,int startY,int grid[maxX][maxY],in
     }
 }
 
-void print_array(int arr[maxX][maxY]) //print tablic
+void print_array(int arr[maxX][maxY]) //print tablic int
 {
     cout<<endl;
     for(int i=0;i<maxX;i++)
@@ -66,7 +67,7 @@ void print_array(int arr[maxX][maxY]) //print tablic
     }
 }
 
-void print_array_double(double arr[maxX][maxY])
+void print_array_double(double arr[maxX][maxY]) //print tablic double
 {
     cout<<endl;
     for(int i=0;i<maxX;i++)
@@ -76,6 +77,18 @@ void print_array_double(double arr[maxX][maxY])
             cout<<arr[i][j]<<" ";
         }
         cout<<endl;
+    }
+}
+void save_to_file(string fileName,int tab[maxX][maxY])
+{
+    ofstream save(fileName);
+    for(int i=0;i<maxX;i++)
+    {
+        for(int j=0;j<maxY;j++)
+        {
+            save<<tab[i][j]<<" ";
+        }
+        save<<endl;
     }
 }
 int main()
@@ -134,19 +147,19 @@ while(closedList[destX][destY]==0) //glowna petla konczy dzialanie gdy dest w za
         }
         distance[tmpX][tmpY]=distance[curX][curY]+1; //dystans od pola [tmpX][tmpY] do startu
         double fVal = distance[tmpX][tmpY]+hVal(tmpX,tmpY,destX,destY); //obliczanie f(poz)=g(poz)+h(poz)
-        if(openList[tmpX][tmpY] == 0 || values[tmpX][tmpY]>fVal) //przypisanie indeksom tablicy values wartosci pola i tablicy openList informacji o rodzicu
+        if(openList[tmpX][tmpY] == 0 || values[tmpX][tmpY]>fVal) //przypisanie tablicy values wartosci pola, tablicy directions kierunkow (1,2,3,4), tablicy openList 1 info ze to byl rodzic
         {
             directions[tmpX][tmpY] = 1+i;
             openList[tmpX][tmpY] = 1;
             values[tmpX][tmpY] = fVal;
         }
     }
-    double tmpValue = 0;
-    for(int i=0;i<maxX;i++)
+    double tmpValue = 0; //min wartosc szukana z tablicy values
+    for(int i=0;i<maxX;i++) //petla po gridzie
     {
         for(int j=0;j<maxY;j++)
         {
-            if(closedList[i][j] == 0 && (values[i][j] <= tmpValue && values[i][j] != 0 || tmpValue == 0) && grid[i][j]!=5) //szukanie najmniejszej wartosci f(poz) i przypisanie jej do closedListy
+            if(closedList[i][j] == 0 && grid[i][j]!=5 && ((values[i][j] <= tmpValue && values[i][j] != 0) || tmpValue == 0)) //szukanie najmniejszej wartosci f(poz) i przypisanie jej do closedListy
             {
                 tmpValue = values[i][j];
                 minX = i;
@@ -163,19 +176,11 @@ while(closedList[destX][destY]==0) //glowna petla konczy dzialanie gdy dest w za
         return 3;
     }
 }
-string fileName="grid_path.txt";
 print_array_double(distance);
 print_array(openList);
 grid_path_reverse(x,y,startX,startY,grid,directions,moveX,moveY);
 print_array(grid);
-ofstream save(fileName);
-for(int i=0;i<maxX;i++)
-{
-    for(int j=0;j<maxY;j++)
-    {
-        save<<grid[i][j]<<" ";
-    }
-    save<<endl;
-}
+string fileName="grid_path1.txt";
+save_to_file(fileName,grid);
     return 0;
 }
