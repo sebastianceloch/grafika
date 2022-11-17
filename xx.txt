@@ -53,7 +53,6 @@ void grid_path_reverse(int x,int y,int startX,int startY,int grid[maxX][maxY],in
         }
     }
 }
-
 void print_array(int arr[maxX][maxY]) //print tablic int
 {
     cout<<endl;
@@ -95,8 +94,8 @@ int main()
 {
     ifstream file;
     file.open("grid.txt");
-    int moveX[4]={0,0,-1,1}; //ruch lewo prawo
-    int moveY[4]={1,-1,0,0}; //ruch gora dol
+    int moveX[4]={0,0,-1,1}; //ruch po gridzie X
+    int moveY[4]={1,-1,0,0}; //ruch po gridzie Y
     int curX=startX; //rodzic X
     int curY=startY; //rodzic Y
     int minX = 0;
@@ -125,6 +124,7 @@ int main()
 while(closedList[destX][destY]==0) //glowna petla konczy dzialanie gdy dest w zamknietej liscie rozne niz zero
 {
     closedList[curX][curY] = 1;
+    openList[curX][curY]=0;     //gdy curX curY wlatuje do closed wychodzi z open
     if(grid[startX][startY]==5) //jak start to 5 na gridzie return 1
     {
         cout<<"start jest sciana"<<endl;
@@ -141,7 +141,7 @@ while(closedList[destX][destY]==0) //glowna petla konczy dzialanie gdy dest w za
         int tmpX,tmpY = 0;
         tmpX = curX+moveX[i]; //dziecko curX
         tmpY = curY+moveY[i]; //dziecko curY
-        if(grid[tmpX][tmpY] == 5 || closedList[tmpX][tmpY] == 1 || tmpX < 0 || tmpY < 0 || tmpX > maxX-1 || tmpY > maxY-1)
+        if(tmpX < 0 || tmpY < 0 || tmpX > maxX-1 || tmpY > maxY-1 || grid[tmpX][tmpY] == 5 || closedList[tmpX][tmpY] == 1)
         {
             continue;
         }
@@ -149,35 +149,35 @@ while(closedList[destX][destY]==0) //glowna petla konczy dzialanie gdy dest w za
         double fVal = distance[tmpX][tmpY]+hVal(tmpX,tmpY,destX,destY); //obliczanie f(poz)=g(poz)+h(poz)
         if(openList[tmpX][tmpY] == 0 || values[tmpX][tmpY]>fVal) //przypisanie tablicy values wartosci pola, tablicy directions kierunkow (1,2,3,4), tablicy openList 1 info ze to byl rodzic
         {
-            directions[tmpX][tmpY] = 1+i;
             openList[tmpX][tmpY] = 1;
             values[tmpX][tmpY] = fVal;
+            directions[tmpX][tmpY] = 1+i;
         }
     }
-    double tmpValue = 0; //min wartosc szukana z tablicy values
+    double tmpValue = 0;
     for(int i=0;i<maxX;i++) //petla po gridzie
     {
         for(int j=0;j<maxY;j++)
         {
             if(closedList[i][j] == 0 && grid[i][j]!=5 && ((values[i][j] <= tmpValue && values[i][j] != 0) || tmpValue == 0)) //szukanie najmniejszej wartosci f(poz) i przypisanie jej do closedListy
             {
-                tmpValue = values[i][j];
+                tmpValue = values[i][j]; //min wartosc szukana z tablicy values
                 minX = i;
                 minY = j;
             }
         }
     }
-    curX = minX;
-    curY = minY;
-    openList[curX][curY]=0; //gdy curX curY wlatuje do closed wychodzi z open
     if(tmpValue==0)
     {
         cout<<"brak sciezki"<<endl;
         return 3;
     }
+    curX = minX;
+    curY = minY;
 }
 print_array_double(distance);
 print_array(openList);
+print_array(closedList);
 grid_path_reverse(x,y,startX,startY,grid,directions,moveX,moveY);
 print_array(grid);
 string fileName="grid_path1.txt";
